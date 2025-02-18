@@ -75,9 +75,9 @@ class ImagePath
 
                 $terrainContent = $terrainFile->getAll();
                 $itemContent = $itemFile->getAll();
-
-                $escapedTerrain = addslashes(json_encode($terrainContent));
-                $escapedItem = addslashes(json_encode($itemContent));
+                
+                $escapedTerrain = json_encode($terrainContent, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $escapedItem = json_encode($itemContent, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
                 $promptWithJson = "Here's some data:\n```json\n" . $escapedTerrain . "\n```\nAnd here's more data:\n```json\n" . $escapedItem . "\n```\nIn these two files, find the most coherent path for the items/blocks: [" . implode(", ", $identifiers) . "] send me the result in a array like this : [name i given => path, name i given => path] Each item/block should have only one associated path, and please do not exceed the number of items/blocks I provided.";
 
