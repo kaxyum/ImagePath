@@ -34,7 +34,7 @@ Await::f2c(function () use ($sender, $form){
         $response = yield ImagePath::getInstance()->askGemini([$sender->getInventory()->getItemInHand()]); // array of items
         $paths = ImagePath::getInstance()->getImagePath($response);
 
-        var_dump($paths[$sender->getInventory()->getItemInHand()->getVanillaName()]); // return the path of your item's image e.g. textures/items/diamond_sword
+        var_dump($paths[ImagePath::getInstance()->formatItemName($sender->getInventory()->getItemInHand())]); // return the path of your item's image e.g. textures/items/diamond_sword
     } catch (Exception $e) 
     {
         var_dump($e->getMessage());

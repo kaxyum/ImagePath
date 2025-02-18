@@ -3,10 +3,14 @@
 namespace ImagePath;
 
 use ImagePath\tasks\AsyncTask;
+use pocketmine\item\Item;
+use pocketmine\item\ItemBlock;
+use pocketmine\item\StringToItemParser;
 use pocketmine\plugin\Plugin;
 use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\SingletonTrait;
+use pocketmine\world\format\io\GlobalBlockStateHandlers;
 use SOFe\AwaitGenerator\Await;
 
 class ImagePath
@@ -59,7 +63,7 @@ class ImagePath
             $identifiers = [];
 
             foreach ($items as $item) {
-                $identifiers[] = $item->getVanillaName();
+                $identifiers[] = $this->formatItemName($item);
             }
 
             $async = new AsyncTask(function (AsyncTask $resolveTask) use ($identifiers, $dataFolder) {
@@ -101,7 +105,13 @@ class ImagePath
         });
     }
 
-
+    public function formatItemName(Item $item): string
+    {
+        if ($item instanceof ItemBlock)
+        {
+            return GlobalBlockStateHandlers::getSerializer()->serialize($item->getBlock()->getStateId())->getName();
+        } else return StringToItemParser::getInstance()->lookupAliases($item)[0];
+    }
 
     public static function register(Plugin $plugin): void
     {
