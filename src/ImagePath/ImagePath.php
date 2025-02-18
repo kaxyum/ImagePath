@@ -26,18 +26,23 @@ class ImagePath
 
     public function getImagePath(string $response): array
     {
+        var_dump("caca");
         $decodedResponse = json_decode($response, true);
 
         $clean_text = preg_replace('/^```json\s*|\s*```$/', '', trim($decodedResponse['candidates'][0]['content']['parts'][0]['text']));
         $clean_text = str_replace("\\/", "/", $clean_text);
         $clean_text = str_replace('\/', '/', $clean_text);
 
+        var_dump($clean_text);
+
         $data = json_decode($clean_text, true);
 
+        var_dump($data);
         $result = [];
 
         if ($data !== null)
         {
+            var_dump("pas nulle");
             foreach ($data as $key => $value)
             {
                 if (is_array($value) && count($value) === 1)
@@ -50,8 +55,13 @@ class ImagePath
             }
         } else
         {
+            var_dump("c nul");
             eval('$result = ' . $clean_text . ';');
+
+            var_dump($clean_text . ';');
         }
+
+        var_dump($result);
 
         return $result;
     }
@@ -75,11 +85,11 @@ class ImagePath
 
                 $terrainContent = $terrainFile->getAll();
                 $itemContent = $itemFile->getAll();
-                
+
                 $escapedTerrain = json_encode($terrainContent, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                 $escapedItem = json_encode($itemContent, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 
-                $promptWithJson = "Here's some data:\n```json\n" . $escapedTerrain . "\n```\nAnd here's more data:\n```json\n" . $escapedItem . "\n```\nIn these two files, find the most coherent path for the items/blocks: [" . implode(", ", $identifiers) . "] send me the result in a array like this : [name i given => path, name i given => path] Each item/block should have only one associated path, and please do not exceed the number of items/blocks I provided.";
+                $promptWithJson = "Here's some data:\n```json\n" . $escapedTerrain . "\n```\nAnd here's more data:\n```json\n" . $escapedItem . "\n```\nIn these two files, find the most coherent path for the items/blocks: [" . implode(", ", $identifiers) . "] send me the result in a array like this : {name i given : path, name i given : path} Each item/block should have only one associated path, and please do not exceed the number of items/blocks I provided and don't add note only the array.";
 
                 $requestData = ['contents' => [['parts' => [['text' => $promptWithJson]]]]];
                 $jsonData = json_encode($requestData);
@@ -89,6 +99,7 @@ class ImagePath
                     CURLOPT_SSL_VERIFYPEER => false,
                     CURLOPT_SSL_VERIFYHOST => false,
                     CURLOPT_POST => true,
+                    CURLOPT_TIMEOUT => 20,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
                     CURLOPT_POSTFIELDS => $jsonData,
