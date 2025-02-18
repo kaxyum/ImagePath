@@ -27,6 +27,7 @@ $this->saveResource("terrain_textures.json");
 To obtain the paths to item images:
 ```php
 use ImagePath\ImagePath;
+use SOFe\AwaitGenerator\Await;
 
 Await::f2c(function () use ($sender, $form){
     try {
