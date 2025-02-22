@@ -48,6 +48,5 @@ $allPaths = [];
 
 array_merge($paths, $allPaths) // save paths
 
-array_diff($arrayToCheckWithItemName, $allPaths) // remove paths already saved
+array_diff_key($arrayToCheckWithItemName, $allPaths) // remove paths already saved
 ```
-
